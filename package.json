@@ -4,9 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "precommit": "npm run lint",
+    "prepush": "npm test",
     "test": "mocha",
-    "lint": "eslint ./src",
-    "lint:fix": "eslint ./src --fix"
+    "lint": "eslint ./src ./test",
+    "lint:fix": "eslint ./src ./test --fix"
   },
   "repository": {
     "type": "git",
@@ -18,10 +20,10 @@
     "url": "https://github.com/cawa-93/anime-bot/issues"
   },
   "homepage": "https://github.com/cawa-93/anime-bot#readme",
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "eslint": "^4.9.0",
+    "husky": "^0.14.3",
     "mocha": "^4.0.1"
   }
 }
