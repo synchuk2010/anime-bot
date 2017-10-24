@@ -1,27 +1,27 @@
 {
   "name": "anime-bot",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "",
   "main": "index.js",
-  "directories": {
-    "test": "mocha"
-  },
-  "dependencies": {},
-  "devDependencies": {
-    "mocha": "^4.0.1"
-  },
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "lint": "eslint ./src",
+    "lint:fix": "eslint ./src --fix"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/cawa-93/anime-bot.git"
   },
-  "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/cawa-93/anime-bot/issues"
   },
-  "homepage": "https://github.com/cawa-93/anime-bot#readme"
+  "homepage": "https://github.com/cawa-93/anime-bot#readme",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "eslint": "^4.9.0",
+    "mocha": "^4.0.1"
+  }
 }
