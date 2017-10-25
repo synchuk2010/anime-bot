@@ -1,14 +1,30 @@
 const db = require('./database')
 const XRegExp = require('xregexp')
-XRegExp.addToken(/\\b/, function () {
-	return '(^|$|[^a-zA-Zа-яА-Я0-9-])'
-})
+XRegExp.addToken(/\\b/, () => '(?:^|$|[^a-zA-Zа-яА-Я0-9-])')
 
 module.exports = function (message) {
 	const result = {}
 
 	if (!message || typeof message !== 'string') {
 		return result
+	}
+
+	// Определение названия
+	XRegExp.replace(message, XRegExp('\\b"(?<name>[^"]+)"\\b', 'ng'), match => {
+		if (match.name && !result.search) {
+			result.search = match.name
+		}
+		return ''
+	})
+
+	// Определение сюжета
+	// Очень не надёжный способ !
+	// TODO: придумать как не включать в это поле всё подряд
+	if (!result.search) {
+		const match = XRegExp.exec(message, XRegExp('\\bпро\\b(?<search>.+)\\b', 'ni'))
+		if (match && match.search) {
+			result.search = match.search
+		}
 	}
 
 	// Поиск соотведствий по жанрам

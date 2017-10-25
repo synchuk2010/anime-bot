@@ -21,6 +21,30 @@ describe('getSearchParams', function () {
 		})
 	})
 
+	describe('Search', function () {
+		var tests = [
+			{message: '"Стальной"',
+				expected: 'Стальной'},
+			{message: '"Стальной алхимик"',
+				expected: 'Стальной алхимик'},
+			{message: '"Стальной" алхимик"',
+				expected: 'Стальной'},
+			{message: '"Стальной" "алхимик"',
+				expected: 'Стальной'},
+			{message: '"Стальной" "алхимик" про магию',
+				expected: 'Стальной'},
+			{message: '"Стальной алхимик про магию',
+				expected: 'магию'},
+		]
+
+		tests.forEach(function (test) {
+			it(`Text: "${test.message}" should parsed as "${test.expected}"`, function () {
+				const res = getSearchParams(test.message)
+				assert.equal(res.search, test.expected)
+			})
+		})
+	})
+
 	describe('Genre', function () {
 		var tests = [
 			{message: 'адрама',
@@ -142,6 +166,8 @@ describe('getSearchParams', function () {
 			{message: '2000 или 2017',
 				expected: '2000,2017'},
 			{message: '1990-2000',
+				expected: '1990-2000'},
+			{message: 'про магию 1990-2000',
 				expected: '1990-2000'},
 			{message: '199, 200, 3015, 1760',
 				expected: ''},
