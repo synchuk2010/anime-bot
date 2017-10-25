@@ -52,7 +52,7 @@ describe('getSearchParams', function () {
 		]
 
 		tests.forEach(function (test) {
-			it('Text: "' + test.message + '" should parsed as expected', function () {
+			it(`Text: "${test.message}" should parsed as "${test.expected}"`, function () {
 				const res = getSearchParams(test.message)
 				if (!res.genre)
 					res.genre = []
@@ -76,7 +76,7 @@ describe('getSearchParams', function () {
 		]
 
 		tests.forEach(function (test) {
-			it('Text: "' + test.message + '" should parsed as expected', function () {
+			it(`Text: "${test.message}" should parsed as "${test.expected}"`, function () {
 				const res = getSearchParams(test.message)
 				if (!res.type)
 					res.type = []
@@ -104,7 +104,7 @@ describe('getSearchParams', function () {
 		]
 
 		tests.forEach(function (test) {
-			it('Text: "' + test.message + '" should parsed as expected', function () {
+			it(`Text: "${test.message}" should parsed as "${test.expected}"`, function () {
 				const res = getSearchParams(test.message)
 				if (!res.order)
 					res.order = {}
@@ -128,13 +128,12 @@ describe('getSearchParams', function () {
 		]
 
 		tests.forEach(function (test) {
-			it('Text: "' + test.message + '" should parsed as expected', function () {
+			it(`Text: "${test.message}" should parsed as "${test.expected}"`, function () {
 				const res = getSearchParams(test.message)
 				assert.equal(res.limit, test.expected)
 			})
 		})
 	})
-
 
 	describe('Season', function () {
 		var tests = [
@@ -149,11 +148,39 @@ describe('getSearchParams', function () {
 		]
 
 		tests.forEach(function (test) {
-			it('Text: "' + test.message + '" should parsed as expected', function () {
+			it(`Text: "${test.message}" should parsed as "${test.expected}"`, function () {
 				const res = getSearchParams(test.message)
 				if (!res.season)
 					res.season = []
 				assert.equal(res.season.join(','), test.expected)
+			})
+		})
+	})
+
+	describe('Rating', function () {
+		var tests = [
+			{message: 'g',
+				expected: 'g'},
+			{message: 'с рейтингом pg',
+				expected: 'pg'},
+			{message: 'аниме 0+',
+				expected: 'g'},
+			{message: 'g или 0+',
+				expected: 'g'},
+			{message: '13+или 18+',
+				expected: 'r_plus'},
+			{message: '13.',
+				expected: ''},
+			{message: '13-18+',
+				expected: ''},
+		]
+
+		tests.forEach(function (test) {
+			it(`Text: "${test.message}" should parsed as "${test.expected}"`, function () {
+				const res = getSearchParams(test.message)
+				if (!res.rating)
+					res.rating = []
+				assert.equal(res.rating.map(g => g.id).join(','), test.expected)
 			})
 		})
 	})

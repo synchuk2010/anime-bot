@@ -28,7 +28,7 @@ module.exports = function (message) {
 			}
 		})
 
-	// // Поиск соотведствий по типам
+	// Поиск соотведствий по типам
 	db.types
 		.map(type => {
 			if (!type.trigger[1]) {
@@ -73,6 +73,24 @@ module.exports = function (message) {
 	if (seasons && seasons.length > 0) {
 		result.season = seasons.map(s => s.trim())
 	}
+
+
+	// Определение возрастных ограничений
+	db.ratings
+		.map(rating => {
+			if (!rating.trigger[1]) {
+				rating.trigger[1] = 'ni'
+			}
+			rating.trigger.regExp = XRegExp(...rating.trigger)
+			return rating
+		})
+		.forEach(rating => {
+			if (rating.trigger.regExp.test(message)) {
+				if (!result.rating)
+					result.rating = []
+				result.rating.push(rating)
+			}
+		})
 
 	return result
 }
