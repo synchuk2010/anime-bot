@@ -1,4 +1,5 @@
 module.exports = {
-	count: 1,
+	limit: 1,
 	type: 'tv',
+	order: 'random',
 }

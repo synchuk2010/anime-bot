@@ -1,12 +1,78 @@
-const defaultParams = require('./defaultParams')
+const db = require('./database')
+const XRegExp = require('xregexp')
+XRegExp.addToken(/\\b/, function () {
+	return '(^|$|[^a-zA-Zа-яА-Я0-9-])'
+})
 
-module.exports = function (str) {
-	if (str === undefined || str === '') {
-		return defaultParams
-	}
-	if (typeof str !== 'string') {
-		throw new Error('Message must be a string, got ' + typeof str)
+module.exports = function (message) {
+	const result = {}
+
+	if (!message || typeof message !== 'string') {
+		return result
 	}
 
-	return {}
+	// Поиск соотведствий по жанрам
+	db.genres
+		.map(genre => {
+			if (!genre.trigger[1]) {
+				genre.trigger[1] = 'ni'
+			}
+			genre.trigger.regExp = XRegExp(...genre.trigger)
+			return genre
+		})
+		.forEach(genre => {
+			if (genre.trigger.regExp.test(message)) {
+				if (!result.genre)
+					result.genre = []
+				result.genre.push(genre)
+			}
+		})
+
+	// // Поиск соотведствий по типам
+	db.types
+		.map(type => {
+			if (!type.trigger[1]) {
+				type.trigger[1] = 'ni'
+			}
+			type.trigger.regExp = XRegExp(...type.trigger)
+			return type
+		})
+		.forEach(type => {
+			if (type.trigger.regExp.test(message)) {
+				if (!result.type)
+					result.type = []
+				result.type.push(type)
+			}
+		})
+
+	// Определение сортировки
+	db.orders
+		.map(order => {
+			if (!order.trigger[1]) {
+				order.trigger[1] = 'ni'
+			}
+			order.trigger.regExp = XRegExp(...order.trigger)
+			return order
+		})
+		.forEach(order => {
+			if (order.trigger.regExp.test(message)) {
+				result.order = order
+			}
+		})
+
+	// Определение количества
+	let limit = message.match(/\b[0-9]{1,2}\b/ig)
+	if (limit && limit.length > 0) {
+		limit = limit.filter(num => num <= 50)
+		if (limit.length > 0)
+			result.limit = limit[0]
+	}
+
+	// Определение год релиза
+	let seasons = XRegExp.match(message, XRegExp('\\b(19|20)[0-9]{2}(-(19|20)[0-9]{2})?\\b', 'nig'))
+	if (seasons && seasons.length > 0) {
+		result.season = seasons.map(s => s.trim())
+	}
+
+	return result
 }
